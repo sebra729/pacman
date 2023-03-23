@@ -17,6 +17,7 @@ router.use(function timeLog (req, res, next) {
 
 router.get('/list', urlencodedParser, function(req, res, next) {
     console.log('[GET /highscores/list]');
+    console.log('FIND_ME!');
     const span = tracer.startSpan('/list', { 'kind':opentelemetry.SpanKind.SERVER })
     Database.getDb(req.app, function(err, db) {
         if (err) {
