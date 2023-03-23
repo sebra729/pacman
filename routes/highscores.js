@@ -3,6 +3,9 @@ var router = express.Router();
 var bodyParser = require('body-parser');
 var Database = require('../lib/database');
 
+const opentelemetry = require('@opentelemetry/api');
+const tracer = opentelemetry.trace.getTracer('srauhala-apm');
+
 // create application/x-www-form-urlencoded parser
 var urlencodedParser = bodyParser.urlencoded({ extended: false })
 
