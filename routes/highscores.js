@@ -14,6 +14,7 @@ router.use(function timeLog (req, res, next) {
 
 router.get('/list', urlencodedParser, function(req, res, next) {
     console.log('[GET /highscores/list]');
+    const span = tracer.startSpan('/list', { 'kind':opentelemetry.SpanKind.SERVER })
     Database.getDb(req.app, function(err, db) {
         if (err) {
             return next(err);
@@ -31,11 +32,13 @@ router.get('/list', urlencodedParser, function(req, res, next) {
                 result.push({ name: item['name'], cloud: item['cloud'],
                               zone: item['zone'], host: item['host'],
                               score: item['score'] });
+                span.setAttribute('name',item['name']);
             });
 
             res.json(result);
         });
     });
+    span.end();
 });
 
 // Accessed at /highscores
