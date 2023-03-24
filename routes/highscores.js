@@ -19,6 +19,8 @@ router.get('/list', urlencodedParser, function(req, res, next) {
     console.log('[GET /highscores/list]');
     console.log('FIND_ME!');
     const span = tracer.startSpan('/list', { 'kind':opentelemetry.SpanKind.SERVER })
+    span.setAttribute('FIND_ME',"FIXED Value");
+    span.addEvent('doing something');
     Database.getDb(req.app, function(err, db) {
         if (err) {
             return next(err);
@@ -42,6 +44,7 @@ router.get('/list', urlencodedParser, function(req, res, next) {
             res.json(result);
         });
     });
+    span.setStatus({ 'code':opentelemetry.SpanStatusCode.OK, 'message':'success' });
     span.end();
 });
 
