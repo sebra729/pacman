@@ -54,8 +54,9 @@ router.post('/', urlencodedParser, function(req, res, next) {
                 ' host =', req.headers.host,
                 ' user-agent =', req.headers['user-agent'],
                 ' referer =', req.headers.referer);
+    var payload = 'Event: '.concat(JSON.stringify(req.body), ' ', req.headers.host, ' ',  req.headers['user-agent'], ' ', req.headers.referer)
     const span = tracer.startSpan('/highscores_custom', { 'kind':opentelemetry.SpanKind.SERVER })
-    span.addEvent(''.concat('Event: ', req.body, ' ', req.headers.host, ' ',  req.headers['user-agent'], ' ', req.headers.referer));
+    span.addEvent(payload);
     var userScore = parseInt(req.body.score, 10),
         userLevel = parseInt(req.body.level, 10);
 
