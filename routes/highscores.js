@@ -65,7 +65,7 @@ router.post('/', urlencodedParser, function(req, res, next) {
     var userScore = parseInt(req.body.score, 10),
         userLevel = parseInt(req.body.level, 10);
 
-    Database.getDb(req.app, function(err, db) {
+    Database.getDb(req.app, span, function(err, db) {
         if (err) {
             return next(err);
         }
