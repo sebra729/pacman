@@ -31,6 +31,8 @@ router.get('/list', urlencodedParser, function(req, res, next) {
         col.find({}).sort([['score', -1]]).limit(10).toArray(function(err, docs) {
             var result = [];
             if (err) {
+                console.log(err.message)
+                span.addEvent(err.message)
                 console.log(err);
             }
 
