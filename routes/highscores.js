@@ -17,12 +17,16 @@ router.use(function timeLog (req, res, next) {
 
 router.get('/list', urlencodedParser, function(req, res, next) {
     console.log('[GET /highscores/list]');
+
     console.log('FIND_ME!');
     const span = tracer.startSpan('/list_custom', { 'kind':opentelemetry.SpanKind.SERVER })
-    span.setAttribute('FIND_ME',"FIXED Value");
-    span.addEvent('doing something');
-    Database.getDb(req.app, function(err, db) {
+    span.setAttribute('endpoint',"get_list");
+
+    Database.getDb(req.app, span, function(err, db) {
         if (err) {
+            console.log("MY_DB_ERROR")
+            console.log(err.message)
+            span.addEvent(err.message)
             return next(err);
         }
 
@@ -31,8 +35,6 @@ router.get('/list', urlencodedParser, function(req, res, next) {
         col.find({}).sort([['score', -1]]).limit(10).toArray(function(err, docs) {
             var result = [];
             if (err) {
-                console.log(err.message)
-                span.addEvent(err.message)
                 console.log(err);
             }
 
@@ -58,14 +60,13 @@ router.post('/', urlencodedParser, function(req, res, next) {
                 ' referer =', req.headers.referer);
     var payload = 'Event: '.concat(JSON.stringify(req.body), ' ', req.headers.host, ' ',  req.headers['user-agent'], ' ', req.headers.referer)
     const span = tracer.startSpan('/highscores_custom', { 'kind':opentelemetry.SpanKind.SERVER })
+    span.setAttribute('endpoint',"post_highscore");
     span.addEvent(payload);
     var userScore = parseInt(req.body.score, 10),
         userLevel = parseInt(req.body.level, 10);
 
     Database.getDb(req.app, function(err, db) {
         if (err) {
-            console.log(err.message)
-            span.addEvent(err.message)
             return next(err);
         }
 
