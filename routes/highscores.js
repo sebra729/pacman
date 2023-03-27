@@ -22,7 +22,7 @@ router.get('/list', urlencodedParser, function(req, res, next) {
     const span = tracer.startSpan('/list_custom', { 'kind':opentelemetry.SpanKind.SERVER })
     span.setAttribute('endpoint',"get_list");
 
-    Database.getDb(req.app, span, function(err, db) {
+    Database.getDb(req.app, function(err, db) {
         if (err) {
             console.log("MY_DB_ERROR")
             console.log(err.message)
@@ -47,7 +47,7 @@ router.get('/list', urlencodedParser, function(req, res, next) {
 
             res.json(result);
         });
-    });
+    }, span);
     span.setStatus({ 'code':opentelemetry.SpanStatusCode.OK, 'message':'success' });
     span.end();
 });
@@ -65,7 +65,7 @@ router.post('/', urlencodedParser, function(req, res, next) {
     var userScore = parseInt(req.body.score, 10),
         userLevel = parseInt(req.body.level, 10);
 
-    Database.getDb(req.app, span, function(err, db) {
+    Database.getDb(req.app, function(err, db) {
         if (err) {
             return next(err);
         }
@@ -106,7 +106,7 @@ router.post('/', urlencodedParser, function(req, res, next) {
                     rs: returnStatus
                 });
             });
-    });
+    }, span);
     span.setStatus({ 'code':opentelemetry.SpanStatusCode.OK, 'message':'success' });
     span.end();
 });
