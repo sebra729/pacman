@@ -18,7 +18,7 @@ router.use(function timeLog (req, res, next) {
 router.get('/list', urlencodedParser, function(req, res, next) {
     console.log('[GET /highscores/list]');
     console.log('FIND_ME!');
-    const span = tracer.startSpan('/list', { 'kind':opentelemetry.SpanKind.SERVER })
+    const span = tracer.startSpan('/list_custom', { 'kind':opentelemetry.SpanKind.SERVER })
     span.setAttribute('FIND_ME',"FIXED Value");
     span.addEvent('doing something');
     Database.getDb(req.app, function(err, db) {
@@ -54,12 +54,15 @@ router.post('/', urlencodedParser, function(req, res, next) {
                 ' host =', req.headers.host,
                 ' user-agent =', req.headers['user-agent'],
                 ' referer =', req.headers.referer);
-
+    const span = tracer.startSpan('/highscores_custom', { 'kind':opentelemetry.SpanKind.SERVER })
+    span.addEvent(str.concat('Event: ', req.body, ' ', req.headers.host, ' ',  req.headers['user-agent'], ' ', req.headers.referer));
     var userScore = parseInt(req.body.score, 10),
         userLevel = parseInt(req.body.level, 10);
 
     Database.getDb(req.app, function(err, db) {
         if (err) {
+            console.log(err.message)
+            span.addEvent(err.message)
             return next(err);
         }
 
@@ -100,6 +103,8 @@ router.post('/', urlencodedParser, function(req, res, next) {
                 });
             });
     });
+    span.setStatus({ 'code':opentelemetry.SpanStatusCode.OK, 'message':'success' });
+    span.end();
 });
 
 module.exports = router;
