@@ -16,7 +16,24 @@
     <meta name="page-topic" content="Games/Arcade" />
 
     <meta content="National" name="distribution" />
+    
+    <!-- sofiar testing -->
+    <!--
 
+    IMPORTANT: Replace the <version> placeholder in the src URL with a
+    version from https://github.com/signalfx/splunk-otel-js-web/releases
+
+    -->
+    <script src="https://cdn.signalfx.com/o11y-gdi-rum/<version>/splunk-otel-web.js" crossorigin="anonymous"></script>
+    <script>
+        SplunkRum.init({
+            realm: "us0",
+            rumAccessToken: "a5OVE71NXiRkCYxH34_Fbw",
+            applicationName: "pacman-frontend",
+            deploymentEnvironment: "srauhala"
+        });
+    </script>
+    
     <!-- Facebook Open Graph Information -->
     <meta property="og:image" content="img/Icon-200x200.png"/>
     <meta property="og:title" content="Pac-Man" />
